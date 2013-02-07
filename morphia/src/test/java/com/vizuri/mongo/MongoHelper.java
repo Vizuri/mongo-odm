@@ -1,4 +1,4 @@
-package com.vizuri.mongo.odm.morphia.util;
+package com.vizuri.mongo;
 
 import java.net.UnknownHostException;
 

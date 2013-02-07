@@ -1,4 +1,4 @@
-package com.vizuri.sat.repository;
+package com.vizuri.mongo.odm.morphia.repository;
 
 import java.util.Iterator;
 
@@ -8,14 +8,15 @@ import org.junit.Test;
 
 import com.google.code.morphia.Morphia;
 import com.mongodb.Mongo;
+import com.vizuri.mongo.BasePersistenceTest;
+import com.vizuri.mongo.MongoHelper;
 import com.vizuri.mongo.odm.morphia.model.Quote;
 import com.vizuri.mongo.odm.morphia.repository.QuoteRepository;
-import com.vizuri.mongo.odm.morphia.util.MongoHelper;
 
-public class QuoteRepositoryTest {
+public class QuoteRepositoryTest extends BasePersistenceTest{
 	private final static Logger LOGGER = Logger
 			.getLogger(QuoteRepositoryTest.class);
-	private static final String DBNAME = "sat";
+	private static final String DBNAME = "odm";
 	private static final String QUOTE_NUMBER = "SomeNumberViaMorphia-001";
 
 	private Mongo mongo;
