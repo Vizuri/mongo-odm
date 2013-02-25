@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Hibernate, Relational Persistence for Idiomatic Java
+ * 
+ * Copyright (c) 2012, Red Hat, Inc. and/or its affiliates or third-party contributors as
+ * indicated by the @author tags or express copyright attribution
+ * statements applied by the authors.  All third-party contributions are
+ * distributed under license by Red Hat, Inc.
+ * 
+ * This copyrighted material is made available to anyone wishing to use, modify,
+ * copy, or redistribute it subject to the terms and conditions of the GNU
+ * Lesser General Public License, as published by the Free Software Foundation.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
+ * for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution; if not, write to:
+ * Free Software Foundation, Inc.
+ * 51 Franklin Street, Fifth Floor
+ * Boston, MA  02110-1301  USA
+  -->
+<persistence version="2.0"
+             xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+
+    <persistence-unit name="vizuri-mongo-ogm">
+        <provider>org.hibernate.ogm.jpa.HibernateOgmPersistence</provider>
+
+        <class>com.vizuri.mongo.odm.hibernateogm.model.LineItem</class>
+        <class>com.vizuri.mongo.odm.hibernateogm.model.Product</class>
+        <class>com.vizuri.mongo.odm.hibernateogm.model.Quote</class>
+
+        <properties>
+            <!-- Configure Hibernate OGM to mount Infinispan -->
+            <property name="hibernate.ogm.datastore.provider" value="org.hibernate.ogm.datastore.mongodb.impl.MongoDBDatastoreProvider"/>
+            <property name="hibernate.ogm.mongodb.database" value="hibernate-ogm-test"/>
+            <property name="hibernate.ogm.mongodb.host" value="localhost"/>
+	      	<property name="hibernate.search.default.directory_provider" value="filesystem"/>
+	      	<property name="hibernate.search.default.indexBase" value="/tmp/.hibernate_ogm_demo_luceneindexes"/>
+        </properties>
+
+    </persistence-unit>
+
+</persistence>

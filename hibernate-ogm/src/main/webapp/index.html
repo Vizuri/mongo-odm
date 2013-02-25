@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Hibernate OGM Demo</title>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	
+	<script type="text/javascript">
+		var request;
+		
+	    $(document).ready(function () {
+	    	clearForm();
+	        getQuotes();
+	    
+		    $("#addQuoteButton").click(function(event){
+		    	if (request) {
+		    		request.abort();
+		    	}
+		    	
+		    	var quoteForm = $("#quoteForm");
+		    	var quoteInputs = quoteForm.find("input, select, button, textarea");
+		    	//var quoteData = JSON.stringify(quoteForm.serializeArray());
+		    	var quoteData = { "quoteNumber": $("#quoteNumber").val(), 
+		    						"quoteVers": $("#quoteVers").val(),
+		    						"shipping": $("#shipping").val()};
+		    	
+		    	console.log("I'm about to put this: " + quoteData);
+		    	
+		    	var jsonData = JSON.stringify(quoteData);
+		    	//var jsonData = quoteData.toJSONString();
+		    	console.log("JSON? " + jsonData);
+		    	
+		    	quoteInputs.prop("disabled", true);
+		    	
+		    	request = $.ajax({
+		    		url: "rest/quotes",
+		    		type: "put",
+		    		data: jsonData,
+		    		dataType: "json",
+		    		contentType: "application/json; charset=utf-8",
+		    		success : function (data){
+		    			quoteInputs.prop("disabled", false);
+			    		console.log("Hooray, it worked!" + data);
+			    		clearForm();
+			    		getQuotes();
+			    	},
+			    	error : function (msg) {
+			    		quoteInputs.prop("disabled", false);
+			    		console.log("Error saving quote: " + msg);
+		    		}
+		    	});
+		    });
+	    });
+	    
+	    function getQuotes() {
+	    	if (request) {
+	    		request.abort();
+	    	}
+	    	
+	    	request = $.ajax({
+	    		url: "rest/quotes",
+	    		type: "get",
+	    		dataType: "json",
+	    		success: function(data) {
+	    			$("#QuoteTableContainer").empty();
+	    			var table = $("<table></table>").addClass("quoteTable");
+	    			
+	    			table.append("<tr><th>Quote Number</th><th>Quote Version</th><th>Shipping</th></tr>");
+	    			$.each(data, function (i, theItem){
+	    				var row = $("<tr></tr>");
+	    				row.append("<td>" + theItem.quoteNumber + "</td>");
+	    				row.append("<td>" + theItem.quoteVers + "</td>");
+	    				row.append("<td>" + theItem.shipping + "</td>");
+	    				table.append(row);
+	    			});
+	    			$("#QuoteTableContainer").append(table);
+	    		},
+	    		error: function (msg) {
+		    		console.log("Error getting quotes: " + msg);
+	    		}
+	    	});
+	    }
+	    
+	    function clearForm() {
+	    	$("#quoteNumber").val("");
+	    	$("#quoteVers").val("");
+	    	$("#shipping").val("");
+	    }
+	  
+	</script>
+</head>
+<body>
+<h1>Fancy Hibernate OGM Demo</h1>
+
+<div id="addQuoteForm">
+<form id="quoteForm">
+	<label for="quoteNumber">Quote Number</label>
+	<input type="text" id="quoteNumber" size="30" />
+	
+	<label for="quoteVers">Quote Version</label>
+	<input type="text" id="quoteVers" size="30" />
+	
+	<label for="shipping">Shipping</label>
+	<input type="text" id="shipping" size="30" />
+</form>
+	<input type="button" value="Save" id="addQuoteButton" />
+</div>
+<input type="button" value="Get Quotes" onclick="getQuotes()" />
+<div id="QuoteTableContainer"></div>
+</body>
+</html>

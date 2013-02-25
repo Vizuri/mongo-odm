@@ -1,0 +1,357 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.vizuri.mongo</groupId>
+		<artifactId>odm</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<groupId>com.vizuri.mongo.odm</groupId>
+	<artifactId>hibernate-ogm</artifactId>
+	<packaging>war</packaging>
+
+	<name>Mongo Object Document Mapper :: Hibernate OGM</name>
+	<description>An Evaluation of the Hibernate-OGM Framework</description>
+	<url>https://github.com/Vizuri/mongo-odm</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jboss.bom.version>1.0.3.Final</jboss.bom.version>
+		<version.org.jboss.as.plugins.maven.plugin>7.2.Final</version.org.jboss.as.plugins.maven.plugin>
+
+		<cglib.version>2.2</cglib.version>
+		<aspectj.version>1.6.10</aspectj.version>
+
+		<mongodb.driver.version>2.7.2</mongodb.driver.version>
+		<slf4j.version>1.6.1</slf4j.version>
+		<log4j.version>1.2.14</log4j.version>
+
+		<javax.servlet-api.version>2.5</javax.servlet-api.version>
+		<javax.jstl-taglibs.version>1.1.2</javax.jstl-taglibs.version>
+		<jackson.version>1.9.3</jackson.version>
+
+		<!-- Plugins -->
+		<maven.copy.plugin.version>0.2.3</maven.copy.plugin.version>
+		<maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
+		<maven.apt.plugin.version>1.0</maven.apt.plugin.version>
+		
+		<hibernateOgmVersion>4.0.0.Beta2</hibernateOgmVersion>
+		<hibernateOgmMongoVersion>4.0.0.Beta1</hibernateOgmMongoVersion>
+		<hibernateSearchVersion>4.2.0.Beta1</hibernateSearchVersion>
+		<junit.version>4.8.2</junit.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jboss.bom</groupId>
+				<artifactId>jboss-javaee-6.0-with-tools</artifactId>
+				<version>${jboss.bom.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<!-- Maven will append the version to the finalName (which is the name 
+			given to the generated war, and hence the context root) -->
+		<finalName>${project.artifactId}</finalName>
+		<plugins>
+			<plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+                <configuration>
+                    <!-- Java EE 6 doesn't require web.xml, Maven needs to catch up! -->
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <packagingExcludes>
+                        WEB-INF/lib/aether-*.jar,WEB-INF/lib/dom4j-*.jar,WEB-INF/lib/hibernate-core-*.jar,WEB-INF/lib/javassist-*.jar,WEB-INF/lib/jboss-*.jar,WEB-INF/lib/log4j-*.jar,WEB-INF/lib/maven-*.jar,WEB-INF/lib/plexus-*.jar,WEB-INF/lib/shrinkwrap-*.jar,WEB-INF/lib/solr-*.jar,WEB-INF/lib/hibernate-commons-*.jar,WEB-INF/lib/wagon-*.jar,WEB-INF/lib/xbean-*.jar,WEB-INF/lib/antlr-*.jar
+                    </packagingExcludes>
+                </configuration>
+            </plugin>
+			<plugin>
+	            <groupId>org.jboss.as.plugins</groupId>
+	            <artifactId>jboss-as-maven-plugin</artifactId>
+	            <version>${version.org.jboss.as.plugins.maven.plugin}</version>
+	         </plugin>
+		</plugins>
+	</build>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+			<version>${cglib.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+
+
+		<!-- Logger -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- The Simple Logging Facade for Java or (SLF4J) serves as a simple facade 
+			or abstraction for various logging frameworks, e.g. java.util.logging, log4j 
+			and logback, allowing the end user to plug in the desired logging framework 
+			at deployment time. -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- Data Mapper package is a high-performance data binding package built 
+			on Jackson JSON processor -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>${jackson.version}</version>
+			<type>jar</type>
+			<!--<scope>compile</scope>-->
+		</dependency>
+
+		<!-- Jackson is a high-performance JSON processor (parser, generator) -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<version>${jackson.version}</version>
+			<type>jar</type>
+			<!--<scope>compile</scope> -->
+		</dependency>
+
+		<!-- MongoDB Java Driver -->
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+			<version>${mongodb.driver.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+             <groupId>org.jboss.bom</groupId>
+             <artifactId>jboss-javaee-6.0-with-hibernate</artifactId>
+             <version>${jboss.bom.version}</version>
+             <type>pom</type>
+             <scope>import</scope>
+         </dependency>
+         
+         <dependency>
+             <groupId>org.hibernate.ogm</groupId>
+             <artifactId>hibernate-ogm-core</artifactId>
+             <version>${hibernateOgmVersion}</version>
+         </dependency>
+         
+         <dependency>
+		    <groupId>org.hibernate.ogm</groupId>
+		    <artifactId>hibernate-ogm-infinispan</artifactId>
+		    <version>${hibernateOgmVersion}</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.hibernate.ogm</groupId>
+		    <artifactId>hibernate-ogm-mongodb</artifactId>
+		    <version>${hibernateOgmMongoVersion}</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-search</artifactId>
+		    <version>${hibernateSearchVersion}</version>
+		    <exclusions>
+		        <exclusion>
+		            <groupId>org.hibernate</groupId>
+		            <artifactId>hibernate-core</artifactId>
+		        </exclusion>
+		    </exclusions>
+		</dependency>
+         
+         
+         <!-- Import the CDI API, we use provided scope as the API is included 
+            in JBoss AS 7 -->
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import the Common Annotations API (JSR-250), we use provided 
+            scope as the API is included in JBoss AS 7 -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.annotation</groupId>
+            <artifactId>jboss-annotations-api_1.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import the JAX-RS API, we use provided scope as the API is included 
+            in JBoss AS 7 -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import the JPA API, we use provided scope as the API is included 
+            in JBoss AS 7 -->
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>4.1.9.Final</version>  <!-- Higher version than BOM to match custom module -->
+			<scope>provided</scope>
+		</dependency>
+
+        <!-- Import the EJB API, we use provided scope as the API is included 
+            in JBoss AS 7 -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.ejb</groupId>
+            <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+         <groupId>org.jboss.spec.javax.servlet</groupId>
+         <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+         <scope>provided</scope>
+      </dependency>
+        
+        <dependency>
+		   <groupId>org.jboss.arquillian.junit</groupId>
+		   <artifactId>arquillian-junit-container</artifactId>
+		   <scope>test</scope>
+		</dependency>
+		
+		<dependency>
+		   <groupId>org.jboss.arquillian.protocol</groupId>
+		   <artifactId>arquillian-protocol-servlet</artifactId>
+		   <scope>test</scope>               
+		</dependency>
+		
+		<dependency>
+		  <groupId>org.jboss.shrinkwrap.resolver</groupId>
+		  <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+		  <scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.avro</groupId>
+			<artifactId>avro</artifactId>
+			<version>1.6.3</version>
+		</dependency>
+		
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<!-- The default profile skips all tests, though you can tune it to run 
+				just unit tests based on a custom pattern -->
+			<!-- Seperate profiles are provided for running all tests, including Arquillian 
+				tests that execute in the specified container -->
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.4.3</version>
+						<configuration>
+							<skip>true</skip>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
+		 <profile>
+         <!-- An optional Arquillian testing profile that executes tests in your JBoss AS instance
+              This profile will start a new JBoss AS instance, and execute the test, shutting it down when done
+              Run with: mvn clean test -Parq-jbossas-managed -->
+         <id>arq-jbossas-managed</id>
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.as</groupId>
+               <artifactId>jboss-as-arquillian-container-managed</artifactId>
+               <scope>test</scope>
+            </dependency>
+         </dependencies>
+      </profile>
+
+      <profile>
+         <!-- An optional Arquillian testing profile that executes tests in a remote JBoss AS instance 
+              Run with: mvn clean test -Parq-jbossas-remote -->
+         <id>arq-jbossas-remote</id>
+         <dependencies>
+            <dependency>
+               <groupId>org.jboss.as</groupId>
+               <artifactId>jboss-as-arquillian-container-remote</artifactId>
+               <scope>test</scope>
+            </dependency>
+         </dependencies>
+         
+      </profile>
+	</profiles>
+
+	<repositories>
+
+		<repository>
+            <id>jboss-public-repository</id>
+            <name>JBoss Repository</name>
+            <url>http://repository.jboss.org/nexus/content/groups/public</url>
+            <!-- These optional flags are designed to speed up your builds by reducing remote server calls -->
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+
+	</repositories>
+
+</project>
