@@ -2,18 +2,38 @@ package com.vizuri.mongo.odm.hibernateogm.model;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Embeddable;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
-@Embeddable
+import org.hibernate.annotations.GenericGenerator;
+
+@Entity
 public class LineItem {
 
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	private Product product;
 	private String customDescription;
 	private BigDecimal proratedListPrice;
 	private BigDecimal quotePrice;
 	private Integer quantity;
-	private Enum<PriceFactor> priceFactor;
 	private BigDecimal priceFactorValue;
+	
+	@Id
+	@GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+	private String id;
+	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public Product getProduct() {
 		return product;
@@ -53,14 +73,6 @@ public class LineItem {
 
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
-	}
-
-	public Enum<PriceFactor> getPriceFactor() {
-		return priceFactor;
-	}
-
-	public void setPriceFactor(Enum<PriceFactor> priceFactor) {
-		this.priceFactor = priceFactor;
 	}
 
 	public BigDecimal getPriceFactorValue() {

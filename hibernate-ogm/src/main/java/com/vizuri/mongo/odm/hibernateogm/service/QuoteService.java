@@ -19,7 +19,6 @@ import org.hibernate.search.query.DatabaseRetrievalMethod;
 import org.hibernate.search.query.ObjectLookupMethod;
 import org.hibernate.search.query.dsl.QueryBuilder;
 
-import com.vizuri.mongo.odm.hibernateogm.model.Potential;
 import com.vizuri.mongo.odm.hibernateogm.model.Quote;
 
 @Stateless
@@ -40,7 +39,7 @@ public class QuoteService {
 		em.persist( quote );
 	}
 	
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	public List<Quote> findQuotesByPotential(Potential potential) {
 		log.info("Looking up quotes by: " + potential);
 		try {
@@ -51,7 +50,7 @@ public class QuoteService {
 			log.error("Thar she blows", ex);
 		}
 		return null;
-	}
+	}*/
 	
 	public List<Quote> findQuotesByCriteria(String criteria) {
 		try {

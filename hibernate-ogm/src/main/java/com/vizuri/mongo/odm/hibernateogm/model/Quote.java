@@ -2,10 +2,14 @@ package com.vizuri.mongo.odm.hibernateogm.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -29,8 +33,6 @@ public class Quote {
 	@Field
 	private String quoteVers;
 	
-	//private List<LineItem> lineItems;
-	
 	private Date sentDate;
 	private Date expireDate;
 	private String rfQNum;
@@ -38,6 +40,9 @@ public class Quote {
 	private BigDecimal taxAmount;
 	
 	private String potentialId;
+	
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private Set<LineItem> lineItems;
 
 	public String getId() {
 		return id;
@@ -55,13 +60,13 @@ public class Quote {
 		this.quoteVers = quoteVers;
 	}
 
-	/*public List<LineItem> getLineItems() {
+	public Set<LineItem> getLineItems() {
 		return lineItems;
 	}
 
-	public void setLineItems(List<LineItem> lineItems) {
+	public void setLineItems(Set<LineItem> lineItems) {
 		this.lineItems = lineItems;
-	}*/
+	}
 
 	public Date getSentDate() {
 		return sentDate;
@@ -111,8 +116,6 @@ public class Quote {
 		this.quoteNumber = quoteNumber;
 	}
 	
-	
-
 	public String getPotentialId() {
 		return potentialId;
 	}
@@ -120,7 +123,7 @@ public class Quote {
 	public void setPotentialId(String potentialId) {
 		this.potentialId = potentialId;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
