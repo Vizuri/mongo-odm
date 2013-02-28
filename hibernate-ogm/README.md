@@ -1,5 +1,4 @@
 ## Hibernate OGM in Action
-**NOTE:  For most of the code examples, we will only show relevant snippets. The complete project is available via the [Vizuri Mongo-ODM Github repository](https://github.com/Vizuri/mongo-odm).** 
 ### Prerequisites
 The standard set of tools will be used as part of our evaluation:   
 	* [Apache Maven](http://maven.apache.org)  
